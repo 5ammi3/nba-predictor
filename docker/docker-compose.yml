@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - SPORTRADAR_API_KEY=${SPORTRADAR_API_KEY}
+      - CLAUDE_API_KEY=${CLAUDE_API_KEY}
+      - POSTGRES_HOST=host.docker.internal
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=nba_user
+      - POSTGRES_PASSWORD=nba_password
+      - POSTGRES_DB=nba_predictor
+      - REDIS_HOST=host.docker.internal
+      - REDIS_PORT=6379
+      - LOG_LEVEL=INFO
+      - USE_SQLITE=true
+    volumes:
+      - ../models:/app/models
+      - ../nba_predictor.db:/app/nba_predictor.db
