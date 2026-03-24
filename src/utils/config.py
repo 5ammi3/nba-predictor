@@ -5,6 +5,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     sportradar_api_key: str = ""
     claude_api_key: str = ""
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
     postgres_host: str = "localhost"
     postgres_port: int = 5432
     postgres_user: str = "nba_user"

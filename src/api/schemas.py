@@ -9,6 +9,9 @@ class GamePredictionRequest(BaseModel):
     date: str = Field(..., description="Game date in YYYY-MM-DD format")
     spread_line: Optional[float] = Field(-5.5, description="Spread line")
     total_line: Optional[float] = Field(220.0, description="Over/Under line")
+    notify_telegram: Optional[bool] = Field(
+        True, description="Send notification to Telegram"
+    )
 
 
 class MoneylinePrediction(BaseModel):

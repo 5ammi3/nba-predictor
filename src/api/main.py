@@ -24,6 +24,7 @@ def convert_numpy(obj):
 from ..utils.logger import logger
 from ..utils.cache import cache_manager
 from ..utils.database import init_db
+from ..utils.telegram import telegram_notifier
 from ..prediction.game_predictor import game_predictor
 from ..prediction.player_props import player_props_predictor
 from ..prediction.value_calculator import value_calculator
@@ -124,6 +125,11 @@ async def predict_game(request: GamePredictionRequest):
     )
 
     prediction = convert_numpy(prediction)
+
+    if request.notify_telegram:
+        prediction["home_team"] = request.team1
+        prediction["away_team"] = request.team2
+        await telegram_notifier.send_prediction(prediction)
 
     return GamePredictionResponse(**prediction)
 
