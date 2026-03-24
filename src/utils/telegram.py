@@ -4,25 +4,38 @@ from ..utils.logger import logger
 
 
 class TelegramNotifier:
+    @property
+    def enabled(self) -> bool:
+        return bool(self.bot_token and self.chat_id)
+
     def __init__(self):
-        self.bot_token = os.getenv("TELEGRAM_BOT_TOKEN")
-        self.chat_id = os.getenv("TELEGRAM_CHAT_ID")
-        self.enabled = bool(self.bot_token and self.chat_id)
+        pass
+
+    def _refresh(self):
+        self.bot_token = os.getenv("TELEGRAM_BOT_TOKEN", "")
+        self.chat_id = os.getenv("TELEGRAM_CHAT_ID", "")
+        logger.info(
+            f"Telegram config: token={'set' if self.bot_token else 'missing'}, chat_id={'set' if self.chat_id else 'missing'}"
+        )
 
     async def send_message(self, text: str):
+        self._refresh()
         if not self.enabled:
-            logger.warning("Telegram notifications not configured")
+            logger.warning(
+                "Telegram notifications not configured - missing token or chat_id"
+            )
             return
 
+        logger.info(f"Sending Telegram message to {self.chat_id}")
         url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
         payload = {"chat_id": self.chat_id, "text": text, "parse_mode": "HTML"}
         async with httpx.AsyncClient() as client:
             try:
                 r = await client.post(url, json=payload, timeout=10)
                 if r.status_code == 200:
-                    logger.info("Telegram notification sent")
+                    logger.info("Telegram notification sent successfully")
                 else:
-                    logger.error(f"Telegram send failed: {r.status_code}")
+                    logger.error(f"Telegram send failed: {r.status_code} - {r.text}")
             except Exception as e:
                 logger.error(f"Telegram error: {e}")
 
