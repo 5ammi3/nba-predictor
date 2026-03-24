@@ -274,33 +274,47 @@ async def predict_today_games():
         return {"message": "No games today", "predictions": []}
 
     predictions = []
+    errors = []
+
     for game in games:
-        home_abbrev = game.get("home_abbrev")
-        away_abbrev = game.get("away_abbrev")
+        try:
+            home_abbrev = game.get("home_abbrev")
+            away_abbrev = game.get("away_abbrev")
 
-        if not home_abbrev or not away_abbrev:
-            continue
+            if not home_abbrev or not away_abbrev:
+                continue
 
-        home_team = await get_team_by_abbreviation(home_abbrev)
-        away_team = await get_team_by_abbreviation(away_abbrev)
+            home_team = await get_team_by_abbreviation(home_abbrev)
+            away_team = await get_team_by_abbreviation(away_abbrev)
 
-        if not home_team or not away_team:
-            continue
+            if not home_team:
+                errors.append(f"Team not found: {home_abbrev}")
+                continue
+            if not away_team:
+                errors.append(f"Team not found: {away_abbrev}")
+                continue
 
-        game_date = datetime.now()
-        spread_line = game.get("spread", -5.5)
+            game_date = datetime.now()
+            spread_line = game.get("spread") or -5.5
 
-        pred = await game_predictor.predict_game(
-            home_team.id, away_team.id, game_date, spread_line, 220.0
-        )
-        pred = convert_numpy(pred)
+            pred = await game_predictor.predict_game(
+                home_team.id, away_team.id, game_date, spread_line, 220.0
+            )
+            pred = convert_numpy(pred)
 
-        pred["home_team"] = home_abbrev
-        pred["away_team"] = away_abbrev
-        pred["game_time"] = game.get("clock", game.get("status", "Scheduled"))
-        pred["game_date"] = game.get("game_date", "")
+            pred["home_team"] = home_abbrev
+            pred["away_team"] = away_abbrev
+            pred["game_time"] = game.get("clock", game.get("status", "Scheduled"))
+            pred["game_date"] = game.get("game_date", "")
 
-        await telegram_notifier.send_prediction(pred)
-        predictions.append(pred)
+            await telegram_notifier.send_prediction(pred)
+            predictions.append(pred)
+        except Exception as e:
+            errors.append(f"Error: {str(e)}")
+            logger.error(f"Prediction error: {e}")
 
-    return {"predictions_sent": len(predictions), "games": predictions}
+    return {
+        "predictions_sent": len(predictions),
+        "errors": errors,
+        "games": predictions,
+    }
