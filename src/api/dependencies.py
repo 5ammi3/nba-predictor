@@ -19,6 +19,11 @@ async def get_team_by_name(name: str):
     return team
 
 
+async def get_team_by_abbreviation(abbrev: str):
+    session = get_session()
+    return session.query(Team).filter(Team.abbreviation == abbrev.upper()).first()
+
+
 async def get_player_by_name(name: str):
     session = get_session()
     player = session.query(Player).filter(Player.name.ilike(f"%{name}%")).first()

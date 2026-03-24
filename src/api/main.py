@@ -25,6 +25,7 @@ from ..utils.logger import logger
 from ..utils.cache import cache_manager
 from ..utils.database import init_db
 from ..utils.telegram import telegram_notifier
+from ..data.sportsfbi_client import sports_fbi_client
 from ..prediction.game_predictor import game_predictor
 from ..prediction.player_props import player_props_predictor
 from ..prediction.value_calculator import value_calculator
@@ -45,6 +46,7 @@ from .schemas import (
 )
 from .dependencies import (
     get_team_by_name,
+    get_team_by_abbreviation,
     get_player_by_name,
     check_health,
 )
@@ -256,3 +258,49 @@ async def run_pipeline(
     await pipeline.run_full_pipeline(start_date, end_date)
 
     return {"status": "completed", "start_date": start_date, "end_date": end_date}
+
+
+@app.get("/live-games")
+async def get_live_games():
+    games = await sports_fbi_client.get_today_games()
+    return {"date": datetime.now().strftime("%Y-%m-%d"), "games": games}
+
+
+@app.post("/predict/today")
+async def predict_today_games():
+    games = await sports_fbi_client.get_today_games()
+
+    if not games:
+        return {"message": "No games today", "predictions": []}
+
+    predictions = []
+    for game in games:
+        home_abbrev = game.get("home_abbrev")
+        away_abbrev = game.get("away_abbrev")
+
+        if not home_abbrev or not away_abbrev:
+            continue
+
+        home_team = await get_team_by_abbreviation(home_abbrev)
+        away_team = await get_team_by_abbreviation(away_abbrev)
+
+        if not home_team or not away_team:
+            continue
+
+        game_date = datetime.now()
+        spread_line = game.get("spread", -5.5)
+
+        pred = await game_predictor.predict_game(
+            home_team.id, away_team.id, game_date, spread_line, 220.0
+        )
+        pred = convert_numpy(pred)
+
+        pred["home_team"] = home_abbrev
+        pred["away_team"] = away_abbrev
+        pred["game_time"] = game.get("clock", game.get("status", "Scheduled"))
+        pred["game_date"] = game.get("game_date", "")
+
+        await telegram_notifier.send_prediction(pred)
+        predictions.append(pred)
+
+    return {"predictions_sent": len(predictions), "games": predictions}
