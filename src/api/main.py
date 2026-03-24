@@ -275,11 +275,13 @@ async def predict_today_games():
 
     predictions = []
     errors = []
+    logger.info(f"Processing {len(games)} games")
 
     for game in games:
         try:
             home_abbrev = game.get("home_abbrev")
             away_abbrev = game.get("away_abbrev")
+            logger.info(f"Processing game: {home_abbrev} vs {away_abbrev}")
 
             if not home_abbrev or not away_abbrev:
                 continue
@@ -289,13 +291,17 @@ async def predict_today_games():
 
             if not home_team:
                 errors.append(f"Team not found: {home_abbrev}")
+                logger.error(f"Team not found: {home_abbrev}")
                 continue
             if not away_team:
                 errors.append(f"Team not found: {away_abbrev}")
+                logger.error(f"Team not found: {away_abbrev}")
                 continue
 
+            logger.info(f"Found teams: {home_team.name} vs {away_team.name}")
+
             game_date = datetime.now()
-            spread_line = game.get("spread") or -5.5
+            spread_line = float(game.get("spread") or -5.5)
 
             pred = await game_predictor.predict_game(
                 home_team.id, away_team.id, game_date, spread_line, 220.0
