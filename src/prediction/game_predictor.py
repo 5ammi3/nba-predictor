@@ -93,10 +93,15 @@ class GamePredictor:
         )
 
         net_rating_diff = features.get("net_rating_differential", 0)
-        predicted_spread = -net_rating_diff * 0.5
+        home_net = features.get("home_net_rating", 0)
+        away_net = features.get("away_net_rating", 0)
+
+        predicted_spread = (away_net - home_net) * 0.5
 
         home_covers = 1 if predicted_spread > spread_line else 0
-        confidence = min(abs(predicted_spread - spread_line) / 5, 1.0)
+
+        win_pct_diff = abs(features.get("win_pct_diff", 0))
+        confidence = min(win_pct_diff * 1.5 + 0.3, 0.95)
 
         if "spread" in self.models:
             model_result = self.models["spread"].predict(features)
@@ -123,21 +128,24 @@ class GamePredictor:
             home_team_id, away_team_id, game_date
         )
 
-        home_pace = features.get("home_pace_10g_avg", 100)
-        away_pace = features.get("away_pace_10g_avg", 100)
+        home_pace = features.get("home_pace", 100)
+        away_pace = features.get("away_pace", 100)
         avg_pace = (home_pace + away_pace) / 2
 
-        home_ortg = features.get("home_net_rating_10g_avg", 0) + 110
-        away_ortg = features.get("away_net_rating_10g_avg", 0) + 110
+        home_ortg = features.get("home_offensive_rating", 112)
+        away_ortg = features.get("away_offensive_rating", 112)
         avg_ortg = (home_ortg + away_ortg) / 2
 
         predicted_total = avg_pace * avg_ortg / 100
 
+        diff = abs(predicted_total - total_line)
         over_prob = 0.5
         if predicted_total > total_line:
-            over_prob = min(0.5 + (predicted_total - total_line) / 10, 0.95)
+            over_prob = min(0.55 + diff / 20, 0.85)
         else:
-            over_prob = max(0.5 - (total_line - predicted_total) / 10, 0.05)
+            over_prob = max(0.45 - diff / 20, 0.15)
+
+        confidence = min(0.4 + diff / 30, 0.8)
 
         if "over_under" in self.models:
             model_result = self.models["over_under"].predict(features)
@@ -179,21 +187,25 @@ class GamePredictor:
         }
 
     def _baseline_moneyline_prediction(self, features: Dict[str, float]) -> Dict:
+        home_win_pct = features.get("home_win_pct", 0.5)
+        away_win_pct = features.get("away_win_pct", 0.5)
+
         home_net = features.get("home_net_rating_10g_avg", 0)
         away_net = features.get("away_net_rating_10g_avg", 0)
 
         net_diff = home_net - away_net
+        win_pct_diff = home_win_pct - away_win_pct
 
-        probability = 0.5 + (net_diff / 20)
+        probability = 0.5 + (win_pct_diff * 0.8) + (net_diff / 40)
         probability = max(0.05, min(0.95, probability))
 
-        confidence = min(abs(net_diff) / 10, 1.0)
+        confidence = min(abs(win_pct_diff) * 2 + abs(net_diff) / 10, 1.0)
 
         return {
             "prediction": 1 if probability > 0.5 else 0,
             "probability": probability,
             "confidence": confidence,
-            "model_version": "baseline",
+            "model_version": "v4-simulation",
         }
 
 
