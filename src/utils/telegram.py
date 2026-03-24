@@ -40,8 +40,31 @@ class TelegramNotifier:
                 logger.error(f"Telegram error: {e}")
 
     async def send_prediction(self, game_pred: dict):
+        from datetime import datetime
+        import pytz
+
         home = game_pred.get("home_team", "Home")
         away = game_pred.get("away_team", "Away")
+
+        game_date_str = game_pred.get("game_date", "")
+        game_time = game_pred.get("game_time", "")
+
+        try:
+            if game_date_str:
+                dt = datetime.fromisoformat(game_date_str.replace("Z", "+00:00"))
+                est = pytz.timezone("US/Eastern")
+                dt_est = dt.astimezone(est)
+                game_time_str = dt_est.strftime("%b %d, %I:%M %p ET")
+            else:
+                game_time_str = "TBD"
+        except:
+            game_time_str = game_date_str[:10] if game_date_str else "TBD"
+
+        if game_pred.get("game_time") and game_pred.get("game_time") not in [
+            "Scheduled",
+            None,
+        ]:
+            game_time_str = f"{game_pred.get('game_time')} ET"
 
         ml = game_pred.get("moneyline", {})
         spread = game_pred.get("spread", {})
@@ -50,7 +73,7 @@ class TelegramNotifier:
         text = f"""🏀 <b>NBA Prediction</b>
 
 {home} vs {away}
-{game_pred.get("game_date", "")}
+{game_time_str}
 
 💰 <b>Moneyline</b>
 • {home}: {ml.get("home_win_probability", 0) * 100:.1f}%

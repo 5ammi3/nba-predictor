@@ -27,38 +27,187 @@ def prepare_game_features(
     away_wins = 43
     away_losses = 27
 
-    if home_team and home_team.abbreviation in ["CHI", "HOU", "DAL", "GSW", "POR", "BKN", "LAC", "MIL", "CHA", "SAC", "NOP", "NYK", "CLE", "ORL", "PHX", "DEN", "UTA", "TOR"]:
+    if home_team and home_team.abbreviation in [
+        "CHI",
+        "HOU",
+        "DAL",
+        "GSW",
+        "POR",
+        "BKN",
+        "LAC",
+        "MIL",
+        "CHA",
+        "SAC",
+        "NOP",
+        "NYK",
+        "CLE",
+        "ORL",
+        "PHX",
+        "DEN",
+        "UTA",
+        "TOR",
+    ]:
         game_data = {
-            "CHI": {"wins": 28, "losses": 42, "streak": -2, "home_wins": 18, "home_losses": 18},
-            "HOU": {"wins": 43, "losses": 27, "streak": 2, "home_wins": 25, "home_losses": 10},
-            "DAL": {"wins": 23, "losses": 48, "streak": -3, "home_wins": 15, "home_losses": 20},
-            "GSW": {"wins": 33, "losses": 38, "streak": -3, "home_wins": 20, "home_losses": 15},
-            "POR": {"wins": 35, "losses": 37, "streak": -1, "home_wins": 22, "home_losses": 14},
-            "BKN": {"wins": 17, "losses": 54, "streak": -7, "home_wins": 10, "home_losses": 25},
-            "LAC": {"wins": 35, "losses": 36, "streak": 1, "home_wins": 22, "home_losses": 12},
-            "MIL": {"wins": 29, "losses": 41, "streak": 1, "home_wins": 18, "home_losses": 17},
-            "CHA": {"wins": 37, "losses": 34, "streak": 3, "home_wins": 22, "home_losses": 14},
-            "SAC": {"wins": 19, "losses": 53, "streak": 1, "home_wins": 12, "home_losses": 25},
-            "NOP": {"wins": 25, "losses": 47, "streak": -1, "home_wins": 16, "home_losses": 20},
-            "NYK": {"wins": 47, "losses": 25, "streak": 6, "home_wins": 28, "home_losses": 8},
-            "CLE": {"wins": 44, "losses": 27, "streak": 3, "home_wins": 28, "home_losses": 10},
-            "ORL": {"wins": 38, "losses": 32, "streak": -5, "home_wins": 24, "home_losses": 12},
-            "PHX": {"wins": 40, "losses": 32, "streak": 1, "home_wins": 24, "home_losses": 12},
-            "DEN": {"wins": 44, "losses": 28, "streak": 2, "home_wins": 28, "home_losses": 10},
-            "UTA": {"wins": 21, "losses": 50, "streak": -1, "home_wins": 14, "home_losses": 22},
-            "TOR": {"wins": 39, "losses": 31, "streak": -2, "home_wins": 24, "home_losses": 12},
+            "CHI": {
+                "wins": 28,
+                "losses": 42,
+                "streak": -2,
+                "home_wins": 18,
+                "home_losses": 18,
+            },
+            "HOU": {
+                "wins": 43,
+                "losses": 27,
+                "streak": 2,
+                "home_wins": 25,
+                "home_losses": 10,
+            },
+            "DAL": {
+                "wins": 23,
+                "losses": 48,
+                "streak": -3,
+                "home_wins": 15,
+                "home_losses": 20,
+            },
+            "GSW": {
+                "wins": 33,
+                "losses": 38,
+                "streak": -3,
+                "home_wins": 20,
+                "home_losses": 15,
+            },
+            "POR": {
+                "wins": 35,
+                "losses": 37,
+                "streak": -1,
+                "home_wins": 22,
+                "home_losses": 14,
+            },
+            "BKN": {
+                "wins": 17,
+                "losses": 54,
+                "streak": -7,
+                "home_wins": 10,
+                "home_losses": 25,
+            },
+            "LAC": {
+                "wins": 35,
+                "losses": 36,
+                "streak": 1,
+                "home_wins": 22,
+                "home_losses": 12,
+            },
+            "MIL": {
+                "wins": 29,
+                "losses": 41,
+                "streak": 1,
+                "home_wins": 18,
+                "home_losses": 17,
+            },
+            "CHA": {
+                "wins": 37,
+                "losses": 34,
+                "streak": 3,
+                "home_wins": 22,
+                "home_losses": 14,
+            },
+            "SAC": {
+                "wins": 19,
+                "losses": 53,
+                "streak": 1,
+                "home_wins": 12,
+                "home_losses": 25,
+            },
+            "NOP": {
+                "wins": 25,
+                "losses": 47,
+                "streak": -1,
+                "home_wins": 16,
+                "home_losses": 20,
+            },
+            "NYK": {
+                "wins": 47,
+                "losses": 25,
+                "streak": 6,
+                "home_wins": 28,
+                "home_losses": 8,
+            },
+            "CLE": {
+                "wins": 44,
+                "losses": 27,
+                "streak": 3,
+                "home_wins": 28,
+                "home_losses": 10,
+            },
+            "ORL": {
+                "wins": 38,
+                "losses": 32,
+                "streak": -5,
+                "home_wins": 24,
+                "home_losses": 12,
+            },
+            "PHX": {
+                "wins": 40,
+                "losses": 32,
+                "streak": 1,
+                "home_wins": 24,
+                "home_losses": 12,
+            },
+            "DEN": {
+                "wins": 44,
+                "losses": 28,
+                "streak": 2,
+                "home_wins": 28,
+                "home_losses": 10,
+            },
+            "UTA": {
+                "wins": 21,
+                "losses": 50,
+                "streak": -1,
+                "home_wins": 14,
+                "home_losses": 22,
+            },
+            "TOR": {
+                "wins": 39,
+                "losses": 31,
+                "streak": -2,
+                "home_wins": 24,
+                "home_losses": 12,
+            },
         }
         if home_team:
-            hd = game_data.get(home_team.abbreviation, {"wins": 30, "losses": 40, "streak": 0, "home_wins": 18, "home_losses": 18})
+            hd = game_data.get(
+                home_team.abbreviation,
+                {
+                    "wins": 30,
+                    "losses": 40,
+                    "streak": 0,
+                    "home_wins": 18,
+                    "home_losses": 18,
+                },
+            )
             home_wins = hd["wins"]
             home_losses = hd["losses"]
         if away_team:
-            ad = game_data.get(away_team.abbreviation, {"wins": 30, "losses": 40, "streak": 0, "home_wins": 18, "home_losses": 18})
+            ad = game_data.get(
+                away_team.abbreviation,
+                {
+                    "wins": 30,
+                    "losses": 40,
+                    "streak": 0,
+                    "home_wins": 18,
+                    "home_losses": 18,
+                },
+            )
             away_wins = ad["wins"]
             away_losses = ad["losses"]
 
-    features["home_win_pct"] = home_wins / (home_wins + home_losses) if (home_wins + home_losses) > 0 else 0.5
-    features["away_win_pct"] = away_wins / (away_wins + away_losses) if (away_wins + away_losses) > 0 else 0.5
+    features["home_win_pct"] = (
+        home_wins / (home_wins + home_losses) if (home_wins + home_losses) > 0 else 0.5
+    )
+    features["away_win_pct"] = (
+        away_wins / (away_wins + away_losses) if (away_wins + away_losses) > 0 else 0.5
+    )
     features["win_pct_diff"] = features["home_win_pct"] - features["away_win_pct"]
 
     features["home_offensive_rating"] = 112.0 + (home_wins - 30) * 0.5
@@ -66,9 +215,15 @@ def prepare_game_features(
     features["home_defensive_rating"] = 112.0 - (home_wins - 30) * 0.3
     features["away_defensive_rating"] = 112.0 - (away_wins - 30) * 0.3
 
-    features["home_net_rating"] = features["home_offensive_rating"] - features["home_defensive_rating"]
-    features["away_net_rating"] = features["away_offensive_rating"] - features["away_defensive_rating"]
-    features["net_rating_differential"] = features["home_net_rating"] - features["away_net_rating"]
+    features["home_net_rating"] = (
+        features["home_offensive_rating"] - features["home_defensive_rating"]
+    )
+    features["away_net_rating"] = (
+        features["away_offensive_rating"] - features["away_defensive_rating"]
+    )
+    features["net_rating_differential"] = (
+        features["home_net_rating"] - features["away_net_rating"]
+    )
 
     features["home_pace"] = 100.0 + (home_wins - 30) * 0.2
     features["away_pace"] = 100.0 + (away_wins - 30) * 0.2
@@ -84,16 +239,6 @@ def prepare_game_features(
 
     features["home_altitude"] = 0
     features["away_altitude"] = 0
-
-    return features
-        features["home_net_rating_10g_avg"] - features["away_net_rating_10g_avg"]
-    )
-
-    features["home_pace_10g_avg"] = home_features.get("pace_10g_avg", 0)
-    features["away_pace_10g_avg"] = away_features.get("pace_10g_avg", 0)
-    features["pace_differential"] = (
-        features["home_pace_10g_avg"] - features["away_pace_10g_avg"]
-    )
 
     return features
 
