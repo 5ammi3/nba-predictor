@@ -202,6 +202,393 @@ def init_db():
     engine = get_engine()
     Base.metadata.create_all(engine)
     logger.info("Database initialized")
+    seed_sample_data()
+
+
+def seed_sample_data():
+    session = get_session()
+    if session.query(Team).first():
+        logger.info("Sample data already exists")
+        session.close()
+        return
+
+    teams_data = [
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131a",
+            "name": "Atlanta Hawks",
+            "city": "Atlanta",
+            "abbreviation": "ATL",
+            "conference": "East",
+            "division": "Southeast",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131b",
+            "name": "Boston Celtics",
+            "city": "Boston",
+            "abbreviation": "BOS",
+            "conference": "East",
+            "division": "Atlantic",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131c",
+            "name": "Brooklyn Nets",
+            "city": "Brooklyn",
+            "abbreviation": "BKN",
+            "conference": "East",
+            "division": "Atlantic",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131d",
+            "name": "Charlotte Hornets",
+            "city": "Charlotte",
+            "abbreviation": "CHA",
+            "conference": "East",
+            "division": "Southeast",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131e",
+            "name": "Chicago Bulls",
+            "city": "Chicago",
+            "abbreviation": "CHI",
+            "conference": "East",
+            "division": "Central",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131f",
+            "name": "Cleveland Cavaliers",
+            "city": "Cleveland",
+            "abbreviation": "CLE",
+            "conference": "East",
+            "division": "Central",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131g",
+            "name": "Dallas Mavericks",
+            "city": "Dallas",
+            "abbreviation": "DAL",
+            "conference": "West",
+            "division": "Southwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131h",
+            "name": "Denver Nuggets",
+            "city": "Denver",
+            "abbreviation": "DEN",
+            "conference": "West",
+            "division": "Northwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131i",
+            "name": "Detroit Pistons",
+            "city": "Detroit",
+            "abbreviation": "DET",
+            "conference": "East",
+            "division": "Central",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131j",
+            "name": "Golden State Warriors",
+            "city": "Golden State",
+            "abbreviation": "GSW",
+            "conference": "West",
+            "division": "Pacific",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131k",
+            "name": "Houston Rockets",
+            "city": "Houston",
+            "abbreviation": "HOU",
+            "conference": "West",
+            "division": "Southwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131l",
+            "name": "Indiana Pacers",
+            "city": "Indiana",
+            "abbreviation": "IND",
+            "conference": "East",
+            "division": "Central",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131m",
+            "name": "LA Clippers",
+            "city": "Los Angeles",
+            "abbreviation": "LAC",
+            "conference": "West",
+            "division": "Pacific",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131n",
+            "name": "Los Angeles Lakers",
+            "city": "Los Angeles",
+            "abbreviation": "LAL",
+            "conference": "West",
+            "division": "Pacific",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131o",
+            "name": "Memphis Grizzlies",
+            "city": "Memphis",
+            "abbreviation": "MEM",
+            "conference": "West",
+            "division": "Southwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131p",
+            "name": "Miami Heat",
+            "city": "Miami",
+            "abbreviation": "MIA",
+            "conference": "East",
+            "division": "Southeast",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131q",
+            "name": "Milwaukee Bucks",
+            "city": "Milwaukee",
+            "abbreviation": "MIL",
+            "conference": "East",
+            "division": "Central",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131r",
+            "name": "Minnesota Timberwolves",
+            "city": "Minnesota",
+            "abbreviation": "MIN",
+            "conference": "West",
+            "division": "Northwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131s",
+            "name": "New Orleans Pelicans",
+            "city": "New Orleans",
+            "abbreviation": "NOP",
+            "conference": "West",
+            "division": "Southwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131t",
+            "name": "New York Knicks",
+            "city": "New York",
+            "abbreviation": "NYK",
+            "conference": "East",
+            "division": "Atlantic",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131u",
+            "name": "Oklahoma City Thunder",
+            "city": "Oklahoma City",
+            "abbreviation": "OKC",
+            "conference": "West",
+            "division": "Northwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131v",
+            "name": "Orlando Magic",
+            "city": "Orlando",
+            "abbreviation": "ORL",
+            "conference": "East",
+            "division": "Southeast",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131w",
+            "name": "Philadelphia 76ers",
+            "city": "Philadelphia",
+            "abbreviation": "PHI",
+            "conference": "East",
+            "division": "Atlantic",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131x",
+            "name": "Phoenix Suns",
+            "city": "Phoenix",
+            "abbreviation": "PHX",
+            "conference": "West",
+            "division": "Pacific",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131y",
+            "name": "Portland Trail Blazers",
+            "city": "Portland",
+            "abbreviation": "POR",
+            "conference": "West",
+            "division": "Northwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685131z",
+            "name": "Sacramento Kings",
+            "city": "Sacramento",
+            "abbreviation": "SAC",
+            "conference": "West",
+            "division": "Pacific",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685132a",
+            "name": "San Antonio Spurs",
+            "city": "San Antonio",
+            "abbreviation": "SAS",
+            "conference": "West",
+            "division": "Southwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685132b",
+            "name": "Toronto Raptors",
+            "city": "Toronto",
+            "abbreviation": "TOR",
+            "conference": "East",
+            "division": "Atlantic",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685132c",
+            "name": "Utah Jazz",
+            "city": "Utah",
+            "abbreviation": "UTA",
+            "conference": "West",
+            "division": "Northwest",
+        },
+        {
+            "sportradar_id": "583ec773-fb46-11e2-a2ad-00505685132d",
+            "name": "Washington Wizards",
+            "city": "Washington",
+            "abbreviation": "WAS",
+            "conference": "East",
+            "division": "Southeast",
+        },
+    ]
+
+    for team_data in teams_data:
+        team = Team(**team_data)
+        session.add(team)
+
+    players_data = [
+        {
+            "sportradar_id": "p001",
+            "name": "LeBron James",
+            "position": "SF",
+            "team_id": 14,
+        },
+        {
+            "sportradar_id": "p002",
+            "name": "Stephen Curry",
+            "position": "PG",
+            "team_id": 10,
+        },
+        {
+            "sportradar_id": "p003",
+            "name": "Kevin Durant",
+            "position": "SF",
+            "team_id": 13,
+        },
+        {
+            "sportradar_id": "p004",
+            "name": "Giannis Antetokounmpo",
+            "position": "PF",
+            "team_id": 17,
+        },
+        {
+            "sportradar_id": "p005",
+            "name": "Nikola Jokic",
+            "position": "C",
+            "team_id": 8,
+        },
+        {
+            "sportradar_id": "p006",
+            "name": "Luka Doncic",
+            "position": "PG",
+            "team_id": 7,
+        },
+        {
+            "sportradar_id": "p007",
+            "name": "Joel Embiid",
+            "position": "C",
+            "team_id": 23,
+        },
+        {
+            "sportradar_id": "p008",
+            "name": "Kawhi Leonard",
+            "position": "SF",
+            "team_id": 13,
+        },
+        {
+            "sportradar_id": "p009",
+            "name": "Anthony Davis",
+            "position": "PF",
+            "team_id": 14,
+        },
+        {
+            "sportradar_id": "p010",
+            "name": "Jayson Tatum",
+            "position": "SF",
+            "team_id": 2,
+        },
+        {
+            "sportradar_id": "p011",
+            "name": "Devin Booker",
+            "position": "SG",
+            "team_id": 24,
+        },
+        {
+            "sportradar_id": "p012",
+            "name": "Damian Lillard",
+            "position": "PG",
+            "team_id": 25,
+        },
+        {
+            "sportradar_id": "p013",
+            "name": "Bradley Beal",
+            "position": "SG",
+            "team_id": 30,
+        },
+        {
+            "sportradar_id": "p014",
+            "name": "Jimmy Butler",
+            "position": "SF",
+            "team_id": 16,
+        },
+        {
+            "sportradar_id": "p015",
+            "name": "Paul George",
+            "position": "SF",
+            "team_id": 13,
+        },
+        {
+            "sportradar_id": "p016",
+            "name": "James Harden",
+            "position": "SG",
+            "team_id": 11,
+        },
+        {
+            "sportradar_id": "p017",
+            "name": "Kyrie Irving",
+            "position": "PG",
+            "team_id": 3,
+        },
+        {
+            "sportradar_id": "p018",
+            "name": "Russell Westbrook",
+            "position": "PG",
+            "team_id": 28,
+        },
+        {
+            "sportradar_id": "p019",
+            "name": "Zion Williamson",
+            "position": "PF",
+            "team_id": 19,
+        },
+        {
+            "sportradar_id": "p020",
+            "name": "Donovan Mitchell",
+            "position": "SG",
+            "team_id": 4,
+        },
+    ]
+
+    for player_data in players_data:
+        player = Player(**player_data)
+        session.add(player)
+
+    session.commit()
+    logger.info("Sample data seeded: 30 teams, 20 players")
+    session.close()
 
 
 def drop_db():
